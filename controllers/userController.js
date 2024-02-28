@@ -48,7 +48,7 @@ module.exports = {
     }
   },
 
-   // update an existing user
+   // delete an existing user
    async deleteUser(req, res) {
     try {
       const user = await User.findByIdAndDelete(req.params.userId);

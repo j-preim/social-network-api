@@ -59,5 +59,44 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // delete an existing thought
+  async deleteThought(req, res) {
+    try {
+      const thought = await Thought.findByIdAndDelete(req.params.thoughtId);
 
+      if (!thought) {
+        return res.status(404).json({ message: 'No thought with that ID' });
+      }
+
+      res.json(thought);
+
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+// add a reaction
+async addReaction (req, res) {
+  try {
+    const thought = await Thought.findOne({ _id: req.params.thoughtId });
+    let currentReactions = thought.reactions;
+    const newReactions = currentReactions.concat(req.body);
+    const dbthoughtData = await Thought.findByIdAndUpdate(req.params.thoughtId, {reactions: newReactions});
+    res.json(dbthoughtData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+},
+
+// remove a reaction
+async removeReaction (req, res) {
+  try {
+    const thought = await Thought.findOne({ _id: req.params.thoughtId });
+    let currentReactions = thought.reactions;
+    const removeReaction = currentReactions.splice(currentReactions.indexOf(req.body.reactionId), 1);
+    const dbthoughtData = await Thought.findByIdAndUpdate(req.params.thoughtId, {reactions: currentReactions});
+    res.json(dbthoughtData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+},
 };
