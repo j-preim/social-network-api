@@ -44,4 +44,20 @@ module.exports = {
       console.error(err);
     }
   },
+  // update an existing thought
+  async updateThought(req, res) {
+    try {
+      const thought = await Thought.findByIdAndUpdate(req.params.thoughtId, req.body);
+
+      if (!thought) {
+        return res.status(404).json({ message: 'No thought with that ID' });
+      }
+
+      res.json(thought);
+
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
 };

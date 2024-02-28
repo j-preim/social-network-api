@@ -29,7 +29,8 @@ connection.once("open", async () => {
   const friends = [];
 
   // Wait for the thoughts to be inserted into the database
-  await Thought.collection.insertMany(thoughts);
+  const insertedThoughts = await Thought.collection.insertMany(thoughts);
+  console.log(insertedThoughts.insertedIds[0]);
 
   for (i = 0; i < usernames.length; i++) {
     users.push({
@@ -41,7 +42,8 @@ connection.once("open", async () => {
   }
 
   // Wait for the users to be inserted into the database
-  await User.collection.insertMany(users);
+  const insertedUsers = await User.collection.insertMany(users);
+  console.log(insertedUsers.insertedIds);
 
   // await User.collection.updateOne({"username":"Alex"}, {$set: {"username":"Alexis"}});
 

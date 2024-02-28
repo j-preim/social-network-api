@@ -56,15 +56,12 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomUsername = () =>
   `${getRandomArrItem(usernames)}`;
 
-// Function to generate random reactions given a number (ex. 10 reactions === getRandomReactions(10))
-const getRandomReactions = (int) => {
-  const results = [];
-  for (let i = 0; i < int; i++) {
-    results.push({
+// Function to generate random reaction
+const getRandomReaction = () => {
+  const results = {
       reactionBody: getRandomArrItem(reactions),
       username: getRandomUsername(),
-    });
-  }
+    };
   return results;
 };
 
@@ -75,7 +72,7 @@ const getRandomThoughts = (int) => {
     results.push({
       thoughtText: getRandomArrItem(thoughts),
       username: getRandomUsername(),
-      reactions: [getRandomReactions(2)]
+      reactions: [getRandomReaction(), getRandomReaction()]
     });
   }
   return results;
@@ -84,7 +81,6 @@ const getRandomThoughts = (int) => {
 const thoughtsByUsername = (thoughts) => {
   let theseThoughts = thoughts;
   let userThoughtIds = [];
-  console.log(theseThoughts);
   for (i = 0; i < theseThoughts.length; i++) {
     userThoughtIds.push(theseThoughts[i]._id);
   }
@@ -95,7 +91,7 @@ const thoughtsByUsername = (thoughts) => {
 module.exports = {
   usernames,
   getRandomUsername,
-  getRandomReactions,
+  getRandomReaction,
   getRandomThoughts,
   genRandomIndex,
   thoughtsByUsername
