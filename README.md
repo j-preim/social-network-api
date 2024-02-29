@@ -6,7 +6,7 @@ The purpose of this project is to build an API for a social network web applicat
 
 ## Installation
 
-A video showing the functionality of this project can be found here: https://drive.google.com/file/d/1WCXQ817S-Uvpw3piPc5fSmhJxnaxlUGd/view
+A video showing the functionality of this project can be found here: https://drive.google.com/file/d/1VY84RXVAarEqyX0cskXjppHPn_OIp7te/view
 
 ## Usage
 
