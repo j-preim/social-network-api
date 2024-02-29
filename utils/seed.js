@@ -1,7 +1,12 @@
 const connection = require("../config/connection");
 const { User, Thought } = require("../models");
 const { findByIdAndUpdate } = require("../models/User");
-const { usernames, getRandomThoughts, genRandomIndex, thoughtsByUsername } = require("./data");
+const {
+  usernames,
+  getRandomThoughts,
+  genRandomIndex,
+  thoughtsByUsername,
+} = require("./data");
 
 // Start the seeding runtime timer
 console.time("seeding");
@@ -30,46 +35,50 @@ connection.once("open", async () => {
 
   // Wait for the thoughts to be inserted into the database
   const insertedThoughts = await Thought.collection.insertMany(thoughts);
-  console.log(insertedThoughts.insertedIds[0]);
 
-  for (i = 0; i < usernames.length; i++) {
-    users.push({
-      username: usernames[i],
-      email: usernames[i] + "@test.com",
-      thoughts: [],
-      friends: [],
-    });
+  const findAllThoughts = await Thought.collection.find({}).toArray();
+
+
+  async function generateUsers(names) {
+    for (i = 0; i < names.length; i++) {
+      let usernameThis = names[i];
+      let thoughtIds = [];
+      for (x = 0; x < findAllThoughts.length; x++) {
+        if (findAllThoughts[x].username === usernameThis) {
+          thoughtIds.push(findAllThoughts[x]._id);
+        }
+      }
+      users.push({
+        username: names[i],
+        email: names[i] + "@test.com",
+        thoughts: thoughtIds,
+        friends: [],
+      });
+    }
+    return users;
   }
 
+  const usersToInsert = await generateUsers(usernames);
+
   // Wait for the users to be inserted into the database
-  const insertedUsers = await User.collection.insertMany(users);
-  console.log(insertedUsers.insertedIds);
-
-  // await User.collection.updateOne({"username":"Alex"}, {$set: {"username":"Alexis"}});
-
-  // const findAllThoughts = await Thought.collection.find({}).toArray();
-
+  const insertedUsers = await User.collection.insertMany(usersToInsert);
 
   for (i = 0; i < users.length; i++) {
     const selectedUsername = users[i].username;
-    // const findUser = await User.collection.findOne({
-    //   "username": selectedUsername,
-    // });
+    const findUser = await User.collection.findOne({
+      "username": selectedUsername,
+    });
+    console.log(findUser);
     const randomFriends = [];
-    const thoughtIds = [];
-    const userThoughts = await Thought.collection.find({"username":selectedUsername}).toArray();
-    console.log(selectedUsername, userThoughts.length)
-    // thoughtIds = thoughtsByUsername(userThoughts);
     randomFriends.push(
       users[genRandomIndex(users)]._id,
       users[genRandomIndex(users)]._id
     );
     User.collection.updateOne(
       { "username": selectedUsername },
-      { $set: { "thoughts": thoughtIds, "friends": randomFriends } }
+      { $set: { "friends": randomFriends } }
     );
   }
-
 
   // Log out a pretty table for comments and posts
   console.table(users);
